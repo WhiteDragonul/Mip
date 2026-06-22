@@ -1,0 +1,30 @@
+# Core (face window + math)
+# pygame-ce is a drop-in replacement for pygame (same `import pygame`) and ships
+# prebuilt wheels for new Python versions like 3.14, where classic `pygame`
+# tries to compile from source and fails.
+pygame-ce
+numpy
+
+# Camera + face tracking
+opencv-python
+
+# Microphone speech-to-text
+SpeechRecognition
+# Mic capture: sounddevice bundles PortAudio as a binary wheel, so it needs NO
+# compiler and works on new Python (3.14). MIP prefers it over PyAudio.
+sounddevice
+# PyAudio is an optional fallback (only if you don't use sounddevice):
+#   Windows:  pip install pyaudio   (needs prebuilt wheel; may fail on 3.14)
+#   Linux/Pi: sudo apt install portaudio19-dev && pip install pyaudio
+
+# Text-to-speech
+# edge-tts = Microsoft neural voices (human-sounding, needs internet). Preferred.
+edge-tts
+# pyttsx3 = offline Windows/Linux voices (robotic) -- used as fallback.
+pyttsx3
+
+# Brain
+anthropic
+
+# Optional: nicer cross-platform WAV playback for the robot voice on non-Windows
+# simpleaudio
