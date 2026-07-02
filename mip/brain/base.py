@@ -15,5 +15,5 @@ class Brain(ABC):
         """True if the brain can actually answer."""
 
     @abstractmethod
-    def respond(self, history):
+    def respond(self, history, state=None):
         """history: list of {role, content}. Returns (text, emotion)."""

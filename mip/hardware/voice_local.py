@@ -46,6 +46,7 @@ except Exception:
 
 from .base import Voice
 from .. import config
+from ..util import is_romanian_text
 
 
 def _play_audio_file(path, state=None):
@@ -79,8 +80,6 @@ class _SoundDeviceMic:
 
     RATE = 16000          # Hz, mono 16-bit -> what Google STT likes
     BLOCK = 0.1           # seconds per read block
-    MAX_SECONDS = 15.0    # hard cap on one utterance
-    SILENCE_HANG = 1.2    # stop after this much trailing silence
 
     def __init__(self):
         self.ok = False
@@ -102,18 +101,33 @@ class _SoundDeviceMic:
         n = int(self.RATE * 1.0)
         rec = sd.rec(n, samplerate=self.RATE, channels=1, dtype="int16")
         sd.wait()
-        self._floor = max(150.0, self._rms(rec.flatten()))
+        self._floor = max(config.MIC_MIN_FLOOR, self._rms(rec.flatten()))
+
+    def _apply_gain(self, audio):
+        """Auto-gain: amplify quiet/distant speech up to a target peak so Google
+        hears it clearly, without over-amplifying near-silence into noise."""
+        if not config.MIC_GAIN:
+            return audio
+        peak = float(np.max(np.abs(audio))) or 1.0
+        target = config.MIC_GAIN_TARGET * 32767.0
+        if peak >= target:
+            return audio
+        gain = min(config.MIC_GAIN_MAX, target / peak)
+        boosted = np.clip(audio.astype(np.float32) * gain, -32767, 32767)
+        return boosted.astype(np.int16)
 
     def listen(self):
         bs = int(self.RATE * self.BLOCK)
-        threshold = self._floor * 1.25
+        threshold = self._floor * config.MIC_THRESHOLD_MULT
+        max_seconds = config.MIC_MAX_SECONDS
+        silence_hang = config.MIC_SILENCE_HANG
         captured = []
         started = False
         silence = 0.0
         elapsed = 0.0
         with sd.InputStream(samplerate=self.RATE, channels=1, dtype="int16",
                             blocksize=bs) as stream:
-            while elapsed < self.MAX_SECONDS:
+            while elapsed < max_seconds:
                 block, _ = stream.read(bs)
                 block = block.flatten()
                 level = self._rms(block)
@@ -126,14 +140,14 @@ class _SoundDeviceMic:
                     captured.append(block)
                     if level < threshold:
                         silence += self.BLOCK
-                        if silence >= self.SILENCE_HANG:
+                        if silence >= silence_hang:
                             break
                     else:
                         silence = 0.0
                     elapsed += self.BLOCK
         if not captured:
             return None
-        audio = np.concatenate(captured).astype(np.int16)
+        audio = self._apply_gain(np.concatenate(captured).astype(np.int16))
         return sr.AudioData(audio.tobytes(), self.RATE, 2)
 
 
@@ -145,6 +159,7 @@ def _play_wav(path):
         winsound.PlaySound(path, winsound.SND_FILENAME)  # blocks
         return True
     try:
+        # pyrefly: ignore [missing-import]
         import simpleaudio
         wave_obj = simpleaudio.WaveObject.from_wave_file(path)
         wave_obj.play().wait_done()
@@ -238,7 +253,8 @@ class LocalVoice(Voice):
         self._voice_id = None          # resolved once, then reused
         self._voice_resolved = False
         if self._edge_ok:
-            print(f"[tts] Neural voice ready ({config.EDGE_VOICE}).")
+            print(f"[tts] Neural voices ready (RO: {config.EDGE_VOICE_RO}, "
+                  f"EN: {config.EDGE_VOICE_EN}).")
         elif config.TTS_ENGINE == "edge" and edge_tts is None:
             print("[tts] edge-tts not installed -> using offline voice. "
                   "(pip install edge-tts)")
@@ -298,10 +314,27 @@ class LocalVoice(Voice):
             return None
         if audio is None:
             return None
-        try:
-            return self._recognizer.recognize_google(audio, language=language).strip()
-        except Exception:
-            return None
+
+        # `language` may be a single code ("ro-RO") or a list of codes. With a
+        # list we transcribe in each language and keep whichever Google is most
+        # confident about -> MIP understands Romanian AND English seamlessly.
+        languages = language if isinstance(language, (list, tuple)) else [language]
+        best_text, best_conf = None, -1.0
+        for lang in languages:
+            try:
+                res = self._recognizer.recognize_google(
+                    audio, language=lang, show_all=True)
+            except Exception:
+                continue
+            alts = res.get("alternative") if isinstance(res, dict) else None
+            if not alts:
+                continue
+            top = alts[0]
+            conf = float(top.get("confidence", 0.0))
+            text = (top.get("transcript") or "").strip()
+            if text and conf > best_conf:
+                best_text, best_conf = text, conf
+        return best_text
 
     def speak(self, text, state=None):
         # 1) preferred: neural edge-tts voice
@@ -317,9 +350,12 @@ class LocalVoice(Voice):
         try:
             path = tempfile.NamedTemporaryFile(suffix=".mp3", delete=False).name
 
+            # pick a NATIVE voice for the reply's language -> correct pronunciation
+            voice_name = (config.EDGE_VOICE_RO if is_romanian_text(text)
+                          else config.EDGE_VOICE_EN)
+
             async def _gen():
-                comm = edge_tts.Communicate(text, config.EDGE_VOICE,
-                                            rate=config.EDGE_RATE)
+                comm = edge_tts.Communicate(text, voice_name, rate=config.EDGE_RATE)
                 await comm.save(path)
 
             asyncio.run(_gen())

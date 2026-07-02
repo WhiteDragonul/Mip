@@ -21,7 +21,10 @@ Architecture (so you can swap laptop hardware for Pi hardware later):
         hearing.py         listen->transcribe loop (uses a Voice backend)
 
       brain/
-        claude_brain.py    Claude API: text -> {text, emotion}
+        custom_brain.py    MIP's own brain (default): 100% offline, grows up,
+                           remembers you, has a personality -- no API at all
+        local_brain.py     optional local LLM via Ollama (offline)
+        claude_brain.py    optional Claude API: text -> {text, emotion}
 
 To port to Pi: implement new hardware/*.py backends against hardware/base.py
 and pick them in app.py. Everything above the hardware layer stays the same.

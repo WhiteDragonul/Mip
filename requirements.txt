@@ -25,6 +25,8 @@ pyttsx3
 
 # Brain
 anthropic
+ddgs
 
 # Optional: nicer cross-platform WAV playback for the robot voice on non-Windows
 # simpleaudio
+

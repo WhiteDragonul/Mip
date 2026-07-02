@@ -56,7 +56,7 @@ class ClaudeBrain(Brain):
                 parts.append(block.text)
         return "".join(parts).strip()
 
-    def respond(self, history):
+    def respond(self, history, state=None):
         """history: list of {role, content}. Returns (text, emotion)."""
         if not self.available():
             return ("I don't have a brain yet -- set ANTHROPIC_API_KEY!", "sad")

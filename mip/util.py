@@ -26,3 +26,28 @@ def strip_emoji(text: str) -> str:
         return text
     cleaned = _EMOJI_RE.sub("", text)
     return re.sub(r"\s{2,}", " ", cleaned).strip()
+
+
+# Common Romanian words used to tell which language a reply is in, so the right
+# (native) text-to-speech voice can be picked. Kept ASCII-friendly because MIP's
+# replies are written without diacritics.
+_RO_HINTS = {
+    "salut", "buna", "bună", "ma", "mă", "bucur", "sunt", "esti", "ești", "este",
+    "te", "iubesc", "ador", "multumesc", "mulțumesc", "mersi", "prieten", "prietene",
+    "ziua", "naștere", "nastere", "azi", "ora", "ceasul", "zi", "si", "și", "ce",
+    "cel", "bun", "buna", "tare", "apropo", "stii", "știi", "aici", "placere",
+    "plăcere", "mai", "nu", "da", "imi", "îmi", "place", "petrecere", "petrecem",
+    "fericit", "super", "beton", "minunat", "grozav", "pup", "voiam", "stiu",
+    "la", "multi", "mulți", "ani", "sa", "să", "hai", "impreuna", "împreună",
+    "lume", "astazi", "astăzi", "cant", "cânt", "petrecem", "robotul", "cunosc",
+}
+
+
+def is_romanian_text(text: str) -> bool:
+    """Best-effort: True if the text looks Romanian (for choosing the TTS voice)."""
+    if not text:
+        return False
+    if any(c in text for c in "ăâîșțĂÂÎȘȚşţ"):
+        return True
+    words = re.findall(r"[a-zăâîșțA-Z]+", text.lower())
+    return any(w in _RO_HINTS for w in words)

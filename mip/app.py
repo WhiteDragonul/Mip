@@ -29,7 +29,10 @@ from .perception.hearing import hearing_loop
 
 def _make_brain():
     """Pick the brain from config. Swap Claude <-> your own AI here."""
-    if config.BRAIN == "local":
+    if config.BRAIN == "custom":
+        from .brain.custom_brain import CustomBrain
+        return CustomBrain()
+    elif config.BRAIN == "local":
         from .brain.local_brain import LocalBrain
         return LocalBrain()
     from .brain.claude_brain import ClaudeBrain

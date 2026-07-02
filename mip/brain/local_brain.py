@@ -84,7 +84,7 @@ class LocalBrain(Brain):
     def available(self):
         return True  # always answers (LLM or rules)
 
-    def respond(self, history):
+    def respond(self, history, state=None):
         if self._llm_ok:
             out = self._ask_ollama(history)
             if out is not None:

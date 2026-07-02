@@ -7,14 +7,18 @@ NAME = "MIP"
 WIDTH, HEIGHT = 520, 420
 FPS = 60
 
-# ---- Language (set to "ro-RO" later to switch back to Romanian) ----
-STT_LANGUAGE = "en-US"        # speech recognition language
+# ---- Language ----
+# MIP listens in BOTH languages: it transcribes each utterance in every language
+# below and keeps the one Google is most confident about. Put your main language
+# first. Use a single-item list (e.g. ["ro-RO"]) to lock to one language.
+STT_LANGUAGES = ["ro-RO", "en-US"]
+STT_LANGUAGE = STT_LANGUAGES[0]   # back-compat for any code still reading this
 
-# ---- Claude brain ----
 # ---- Which brain MIP uses ----
+# "custom" = Custom offline learning brain (0% cloud, 100% private, learns locally).
 # "claude" = Claude API (smart, cloud, costs money).
 # "local"  = your own offline AI via Ollama, no cloud (the path to selling MIP).
-BRAIN = "claude"
+BRAIN = "custom"
 
 # Claude (cloud) settings
 # Use a model you have access to. claude-haiku-4-5 is fast & cheap for a pet.
@@ -37,6 +41,21 @@ WEB_SEARCH_MAX_USES = 3      # max searches per reply
 MEMORY_FILE = "mip_memory.json"
 MEMORY_KEEP = 60             # max messages kept on disk
 
+# ---- Personality / companion behavior (custom brain) ----
+# How long an active chat stays "awake" before MIP needs the wake word again.
+CONVERSATION_TIMEOUT_SEC = 45.0
+
+# MIP acts like a real friend: now and then it says something on its own --
+# a compliment, an "I love being your friend", a random thought, or it teases
+# you a little (yes, sometimes annoying, on purpose). All 100% offline.
+IDLE_CHATTER = True
+IDLE_MIN_GAP_SEC = 28.0      # min seconds between two spontaneous remarks
+SPONTANEOUS_CHANCE = 0.45    # chance to speak up on a quiet beat (in a chat)
+SEEN_GREET_GAP_SEC = 150.0   # min seconds between "oh I see you!" greetings
+SEEN_GREET_CHANCE = 0.5      # chance to greet when it spots your face again
+# Chance MIP adds a little compliment/affection tail to a normal reply.
+SPICE_CHANCE = 0.22
+
 SYSTEM_PROMPT = (
     "You are MIP, a fun, witty friend the user talks to. You can chat about "
     "literally anything -- life, games, random thoughts, jokes, problems. "
@@ -58,11 +77,15 @@ SYSTEM_PROMPT = (
 # "edge"    = Microsoft neural voices -- clear & natural base (needs internet).
 # "pyttsx3" = offline Windows SAPI voices (works with no internet).
 TTS_ENGINE = "edge"
-# The EMO voice = a clear neural voice + a light "cute robot" effect on top.
-# Voices that fit EMO best (chirpy/young): en-US-AnaNeural (cute, kid-like),
-# en-US-AvaNeural (friendly female), en-US-AndrewNeural (warm male),
-# en-US-BrianNeural (casual male), en-GB-MaisieNeural (young british).
-EDGE_VOICE = "en-US-AvaNeural"
+# MIP speaks BOTH languages with a NATIVE voice, so Romanian is pronounced like
+# Romanian (not English with an accent). It picks the voice that matches the
+# language of each reply automatically.
+#   Romanian neural voices: ro-RO-AlinaNeural (female), ro-RO-EmilNeural (male)
+#   English neural voices:  en-US-AnaNeural (cute kid), en-US-AvaNeural (female),
+#                           en-US-AndrewNeural / en-US-BrianNeural (male)
+EDGE_VOICE_RO = "ro-RO-AlinaNeural"
+EDGE_VOICE_EN = "en-US-AvaNeural"
+EDGE_VOICE = EDGE_VOICE_EN   # default / fallback when language is unknown
 EDGE_RATE = "+6%"            # speed: "-10%" slower, "+0%" normal, "+15%" faster
 
 # ---- EMO "cute robot" effect (applied on top of the neural voice) ----
@@ -76,6 +99,18 @@ EFFECT_MOD_DEPTH = 0.25      # 0 = human, ~0.25 = cute robot, 0.4+ = heavy robot
 
 TTS_RATE = 175               # words per minute (pyttsx3 fallback only)
 TTS_VOLUME = 1.0
+
+# ---- Microphone sensitivity / range ----
+# These widen the "hearing range" so MIP catches you even from across the room,
+# not just glued to the mic. Lower floor + lower threshold = more sensitive;
+# the gain boost amplifies quiet, far-away speech before recognition.
+MIC_MIN_FLOOR = 60.0         # noise-floor floor (lower = picks up quieter speech)
+MIC_THRESHOLD_MULT = 1.25    # start capturing at floor * this (lower = farther)
+MIC_SILENCE_HANG = 1.4       # seconds of quiet that end an utterance
+MIC_MAX_SECONDS = 18.0       # hard cap on one utterance
+MIC_GAIN = True              # auto-amplify captured audio (helps distant speech)
+MIC_GAIN_TARGET = 0.6        # boost peak up to 60% of full scale
+MIC_GAIN_MAX = 12.0          # but never amplify more than this (avoids noise blowup)
 
 # ---- Colors (EMO-style cyan eyes on dark background) ----
 BG      = (0, 0, 0)

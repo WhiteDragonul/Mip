@@ -13,6 +13,16 @@ If the camera / microphone / API key is missing, MIP still starts
 See README.md for setup and the Raspberry Pi porting guide.
 """
 
+import sys
+
+# Make the terminal print Romanian diacritics (ă, â, î, ș, ț) instead of
+# crashing or showing garbage on the default Windows console codepage.
+try:
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
+except Exception:
+    pass
+
 from mip.app import run
 
 if __name__ == "__main__":

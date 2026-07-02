@@ -41,8 +41,22 @@ class RobotState:
         self.eye_dy = 0.0
         self.face_seen = False      # is a face currently tracked?
 
-        # conversation history for Claude (list of {role, content})
+        # conversation history (list of {role, content})
         self.history = []
+
+        # learning & custom brain variables (100% offline learning)
+        self.facts_user = {}
+        self.facts_world = {}
+        self.learned_responses = []
+        self.interactions_count = 0
+
+        # --- growth / companion brain ---
+        # when MIP was first switched on (its own "birth"); used to compute how
+        # long it has known you and how grown-up it is.
+        self.born_at = time.time()
+        # last calendar year MIP already sang "happy birthday", so it only sings
+        # once per birthday, not on every sentence.
+        self.last_birthday_year = 0
 
     def trigger_wave(self):
         import time
@@ -61,14 +75,38 @@ class RobotState:
                     data = json.load(f)
                 if isinstance(data, list):
                     self.history = data
-                    print(f"[memory] Loaded {len(data)} past messages.")
+                    self.facts_user = {}
+                    self.facts_world = {}
+                    self.learned_responses = []
+                    self.interactions_count = 0
+                    print(f"[memory] Loaded legacy list memory with {len(data)} past messages.")
+                elif isinstance(data, dict):
+                    self.history = data.get("history", [])
+                    self.facts_user = data.get("facts_user", {})
+                    self.facts_world = data.get("facts_world", {})
+                    self.learned_responses = data.get("learned_responses", [])
+                    self.interactions_count = data.get("interactions_count", 0)
+                    self.born_at = data.get("born_at", self.born_at)
+                    self.last_birthday_year = data.get("last_birthday_year", 0)
+                    print(f"[memory] Loaded rich memory: {len(self.history)} messages, "
+                          f"{len(self.facts_user)} user facts, {len(self.facts_world)} world facts, "
+                          f"{len(self.learned_responses)} taught responses, interactions: {self.interactions_count}")
         except Exception as e:
             print("[memory] could not load:", e)
 
     def save_memory(self):
         try:
-            trimmed = self.history[-config.MEMORY_KEEP:]
+            trimmed_history = self.history[-config.MEMORY_KEEP:]
+            data = {
+                "history": trimmed_history,
+                "facts_user": self.facts_user,
+                "facts_world": self.facts_world,
+                "learned_responses": self.learned_responses,
+                "interactions_count": self.interactions_count,
+                "born_at": self.born_at,
+                "last_birthday_year": self.last_birthday_year,
+            }
             with open(config.MEMORY_FILE, "w", encoding="utf-8") as f:
-                json.dump(trimmed, f, ensure_ascii=False)
+                json.dump(data, f, ensure_ascii=False, indent=2)
         except Exception as e:
             print("[memory] could not save:", e)
