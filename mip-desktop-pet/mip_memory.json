@@ -1,0 +1,206 @@
+{
+  "history": [
+    {
+      "role": "assistant",
+      "content": "{\"text\": \"Hei! Te-am asteptat!\", \"emotion\": \"excited\"}"
+    },
+    {
+      "role": "user",
+      "content": "hello mowers"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"text\": \"Hi! So good to see you.\", \"emotion\": \"happy\"}"
+    },
+    {
+      "role": "user",
+      "content": "play me party"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"text\": \"Partyyy! Cranking up the music in my circuits, let's dance! Woohoo! I'm so glad you're my friend.\", \"emotion\": \"excited\"}"
+    },
+    {
+      "role": "user",
+      "content": "how are you how are you"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"text\": \"I'm well and grateful to have you. How was your day?\", \"emotion\": \"happy\"}"
+    },
+    {
+      "role": "user",
+      "content": "needless pretty good"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"text\": \"I'm not sure how to answer that. Teach me with 'when I say X you say Y'.\", \"emotion\": \"neutral\"}"
+    },
+    {
+      "role": "user",
+      "content": "I said that it was pretty good my day"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"text\": \"I don't have an answer for that yet. Teach me and I'll remember!\", \"emotion\": \"neutral\"}"
+    },
+    {
+      "role": "user",
+      "content": "you asked me how my day is and I said that it was pretty good"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"text\": \"I'm not sure how to answer that. Teach me with 'when I say X you say Y'.\", \"emotion\": \"neutral\"}"
+    },
+    {
+      "role": "user",
+      "content": "salute meet Mouse"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"text\": \"I hear you. How does that make you feel?\", \"emotion\": \"happy\"}"
+    },
+    {
+      "role": "user",
+      "content": "Mars"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"text\": \"I hear you. How does that make you feel?\", \"emotion\": \"happy\"}"
+    },
+    {
+      "role": "user",
+      "content": "ce faci"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"text\": \"Ma simt excelent, mai ales ca vorbesc cu tine. Tu ce faci?\", \"emotion\": \"happy\"}"
+    },
+    {
+      "role": "user",
+      "content": "play me power you"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"text\": \"You lost me, but if you teach me I'll remember!\", \"emotion\": \"curious\"}"
+    },
+    {
+      "role": "user",
+      "content": "play me how how are you"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"text\": \"I'm well and grateful to have you. How was your day?\", \"emotion\": \"happy\"}"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"text\": \"Hey, I'm really happy you're my friend!\", \"emotion\": \"love\"}"
+    },
+    {
+      "role": "user",
+      "content": "can you hear me"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"text\": \"You lost me, but if you teach me I'll remember!\", \"emotion\": \"curious\"}"
+    },
+    {
+      "role": "user",
+      "content": "meep can you hear me"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"text\": \"You lost me, but if you teach me I'll remember!\", \"emotion\": \"curious\"}"
+    },
+    {
+      "role": "user",
+      "content": "da ar fi bine să să și meargă"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"text\": \"Super! Imi place sa aud asta! Ma bucur ca esti prietenul meu.\", \"emotion\": \"happy\"}"
+    },
+    {
+      "role": "user",
+      "content": "hey meep can you hear me"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"text\": \"Hi! So good to see you.\", \"emotion\": \"happy\"}"
+    },
+    {
+      "role": "user",
+      "content": "how are you"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"text\": \"I'm well and grateful to have you. How was your day?\", \"emotion\": \"happy\"}"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"text\": \"Just wanted you to know you're awesome.\", \"emotion\": \"happy\"}"
+    },
+    {
+      "role": "user",
+      "content": "it was pretty cool I'm pretty tired"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"text\": \"That's great! I'm happy for you!\", \"emotion\": \"happy\"}"
+    },
+    {
+      "role": "user",
+      "content": "what's the weather like today in Romania"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"text\": \"You lost me, but if you teach me I'll remember!\", \"emotion\": \"curious\"}"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"text\": \"Hey, I'm really happy you're my friend!\", \"emotion\": \"love\"}"
+    },
+    {
+      "role": "user",
+      "content": "hello my pic can you hear me"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"text\": \"Hi! So good to see you. You're the best.\", \"emotion\": \"happy\"}"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"text\": \"I learned something new today and I'm proud of myself!\", \"emotion\": \"excited\"}"
+    },
+    {
+      "role": "user",
+      "content": "hello in my pic can you hear me"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"text\": \"Hi! So good to see you.\", \"emotion\": \"happy\"}"
+    },
+    {
+      "role": "user",
+      "content": "how old are you how was your day"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"text\": \"I'm Mip, a grown-up robot who knows you well. I've known you for 0 days and I grow with every chat.\", \"emotion\": \"happy\"}"
+    },
+    {
+      "role": "user",
+      "content": "can you search on the internet"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"text\": \"Haha, I see. Keep going!\", \"emotion\": \"happy\"}"
+    }
+  ],
+  "facts_user": {},
+  "facts_world": {},
+  "learned_responses": [],
+  "interactions_count": 112,
+  "born_at": 1782120212.2579668,
+  "last_birthday_year": 0
+}
